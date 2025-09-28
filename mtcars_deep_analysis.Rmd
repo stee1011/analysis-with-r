@@ -1,0 +1,211 @@
+```{R}
+# Set seed for reproducibility
+set.seed(123)
+
+# Number of observations
+n <- 100
+
+# Feature 1 (High Correlation) - Linear
+x1 <- seq(from = 0, to = 10, length.out = n)
+
+# Feature 2 (Highly Correlated with x1) - Also Linear
+x2 <- x1 * 2 + rnorm(n, mean = 0, sd = 1)  # Add some noise
+
+# Other Features - Polynomial Relationship
+x3 <- x1^2 + rnorm(n, mean = 0, sd = 0.5)
+x4 <- x1^3 + rnorm(n, mean = 0, sd = 0.7)
+
+# Create the data frame
+synthetic_data <- data.frame(
+  x1 = x1,
+  x2 = x2,
+  x3 = x3,
+  x4 = x4
+)
+
+
+# Display first few rows to check
+head(synthetic_data)
+
+
+
+
+```
+
+
+
+```{r}
+library(ggplot2)
+
+ggplot(synthetic_data, aes(x = x2, y = x4)) + 
+    geom_point(color='steelblue', size=2) +
+    geom_smooth(
+      method = lm,
+      formula = y ~ poly(x, degree= 2),
+      se = TRUE,
+      color = 'darkred'
+    ) +
+    labs(
+      
+      title = "Linear Regression",
+      
+      x = "The X1 variable",
+      y = "The x2 variable"
+      
+    ) +
+    
+    theme_minimal()
+       
+
+
+
+
+```
+
+
+
+
+```{R}
+set.seed(123)
+
+# Three groups with slightly different means
+group <- factor(rep(c("A","B","C"), each = 20))
+score <- c(rnorm(20, mean = 50, sd = 5),
+           rnorm(20, mean = 55, sd = 5),
+           rnorm(20, mean = 60, sd = 5))
+anova_df <- data.frame(group, score)
+head(anova_df)
+
+
+
+
+
+```
+
+
+```{R}
+data("mtcars")
+
+
+
+  
+```
+
+
+```{R}
+library(ggplot2)
+
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_violin(fill="steelblue") +
+  geom_boxplot(width = 0.1, outlier.shape = NA, color = "black") +
+  geom_jitter(width = 0.1) +
+  stat_summary(fun = mean, geom = "point", shape = 24, size = 3 , fill = "red") +
+  stat_summary(fun = median, geom = "crossbar", color = "green")
+
+
+```
+
+
+
+
+
+
+
+
+```{R}
+
+head(mtcars, 10)
+
+```
+
+
+```{R}
+library(ggplot2)
+
+ggplot(mtcars, aes(x = disp, y = mpg, color = interaction(cyl, am))) + 
+  geom_point(size=2) +
+  geom_smooth(
+    method = "lm",
+    color = "darkred",
+    formula = y ~ poly(x, degree = 2),
+    se = TRUE
+  )
+  
+  
+  theme_bw()
+
+
+
+
+
+```
+
+
+
+```{R}
+# Automatic vs manual accerelation
+
+ggplot(mtcars, aes(x = factor(am), y = qsec)) +
+  geom_boxplot(width = 0.1, fill = "steelblue", color="green") +
+  geom_jitter(width = 0.1) +
+  stat_summary(fun = mean, geom = "point", shape = 24, fill = "red") +
+  labs(
+    title = "Analysis of auto cars accerelation vs manual cars",
+    x = "Manual transmission mode 0 for auto",
+    y = "distribution of accelerations"
+  )
+
+
+
+
+
+
+```
+
+
+
+
+
+```{R}
+aof_summary <- aov(qsec ~ am, data = mtcars)
+
+summary(aof_summary)
+
+
+
+```
+
+```{md}
+**We fail to reject H0: No statistical significance on group mean P() > 0.05**
+```
+
+```{R}
+
+library(ggplot2)
+
+ggplot(mtcars, aes(x = wt, y = mpg)) + 
+  geom_point(size=2) +
+  
+  geom_smooth(method = "lm", se = TRUE, color = "darkred", formula = y ~ poly(x, degree = 2)) +
+  
+  facet_wrap(~am)
+  theme_classic()
+
+
+
+```
+
+
+
+
+```{R}
+# Multiple regression analysis
+
+fit <- lm(mpg ~ wt + hp + am + qsec, data = mtcars)
+
+summary(fit)
+
+
+
+
+```
